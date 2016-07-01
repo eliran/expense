@@ -1,0 +1,40 @@
+{
+  "name": "expense.server",
+  "version": "0.1.0",
+  "description": "TopTal Simple Expense Tracking App REST Server",
+  "main": "index.js",
+  "engines": {
+    "node": "0.10.x"
+  },
+  "scripts": {
+    "pretest": "jshint *.js lib/*.js && jscs *.js lib/*.js",
+    "test": "node_modules/.bin/mocha --recursive",
+    "posttest": "npm run cover",
+    "autotest": "node_modules/.bin/mocha -w",
+    "cover": "istanbul cover node_modules/.bin/_mocha -- --recursive --reporter=min",
+    "start": "node index.js"
+  },
+  "author": {
+    "name": "Eliran Ben-Ezra",
+    "email": "eliran@threeplay.com",
+    "url": ""
+  },
+  "dependencies": {
+    "js-yaml": "^3.6.1",
+    "openrecord": "^1.10.11",
+    "q": "^1.4.1",
+    "restify": "^4.1"
+  },
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "chai-as-promised": "^5.2.0",
+    "istanbul": "^0.3.14",
+    "jscs": "^1.13.1",
+    "jshint": "^2.7.0",
+    "mocha": "^2.1.0",
+    "sinon": "^1.13.0",
+    "sinon-chai": "^2.8.0",
+    "sqlite3": "^3.1.4"
+  },
+  "license": "ISC"
+}

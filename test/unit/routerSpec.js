@@ -44,6 +44,13 @@ describe('REST API Router', function(){
         return expect(invoke(invoker, {})).to.become(Response.unauthorized())
       })
 
+      it('#isProtected returns if a route is protected', function(){
+        this.router.addRoute('get', '/path', this, 'onlyIfLoggedIn')
+        expect(this.router.isProtected('get', '/path')).to.be.false
+        this.router.protectRoute('get', '/path')
+        expect(this.router.isProtected('get', '/path')).to.be.true
+      })
+
       describe('when session exists', function(){
         beforeEach(function(){
           var context = this
@@ -222,6 +229,9 @@ describe('REST API Router', function(){
          , '/routeB': {
              'put': {
                'operationId': 'routeBPut'
+             , 'security': {
+                 'token' : []
+               }
              }
            , 'none': {
              }
@@ -229,6 +239,7 @@ describe('REST API Router', function(){
          }
          this.router.addRoutes(testRoutes, {})
          expect(this.mockHttpProvider.routes).to.have.keys('get:/routeA', 'post:/routeA', 'put:/routeB')
+         expect(this.router.isProtected('put', '/routeB')).to.be.true
       })
     })
 

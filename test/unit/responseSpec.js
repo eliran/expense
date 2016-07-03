@@ -35,6 +35,24 @@ describe('Response Object', function(){
     })
   })
 
+  describe('#created', function(){
+    it('status 201', function(){
+      expect(Response.created().status).to.equal(201)
+    })
+  })
+
+  describe('#errors', function(){
+    it('status 400', function(){
+      expect(Response.errors({}).status).to.equal(400)
+    })
+    it('code, errors properties', function(){
+      expect(Response.errors({}).body).to.eql({
+        code: 'Errors'
+      , errors: {}
+      })
+    })
+  })
+
   describe('#internalError', function(){
     it('with no message', function(){
       var response = Response.internalError()

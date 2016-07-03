@@ -72,6 +72,10 @@ paths:
           description: user info
           schema:
             $ref: '#/definitions/user'
+        '400':
+          description: no such user
+          schema:
+            $ref: '#/definitions/errorModel'
         default:
           description: unexpected error
           schema:

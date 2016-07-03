@@ -1,0 +1,7 @@
+---
+swagger: '2.0'
+host: localhost
+paths:
+  /users:
+  /users/{id}:
+  /users/{id1}/{id2}/{id3}:

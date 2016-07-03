@@ -4,24 +4,7 @@ var helpers = require('../helpers')
   , Response = helpers.Response
   , RestifyHttpProvider = require('../../lib/restifyHttpProvider')
   , restify = require('restify')
-  , testRoutes = {
-      '/resource': { 
-        get: { operationId: 'allResources' }
-      , post: { operationId: 'newResource' } 
-      }
-    , '/resource/:id': { 
-        get: { operationId: 'getResource' }
-      , put: { operationId: 'updateResource' }
-      , delete: { operationId: 'deleteResource' } 
-      }
-    , '/echo/:id/:other': {
-        get: { operationId: 'getArgs' }
-      }
-    , '/echo': {
-        get: { operationId: 'getArgs' }
-      , post: { operationId: 'getArgs' }
-      }
-    }
+  , testRoutes = helpers.swaggerReader(__dirname + '/testApi.yml', true).paths
 
 describe('restify http provider', function(){
   before(function(done){

@@ -1,0 +1,21 @@
+paths:
+  /resource:
+    get:
+      operationId: allResources
+    post:
+      operationId: newResource
+  /resource/{id}:
+    get:
+      operationId: getResource
+    put:
+      operationId: updateResource
+    delete:
+      operationId: deleteResource
+  /echo/{id}/{other}:
+    get:
+      operationId: getArgs
+  /echo:
+    get:
+      operationId: getArgs
+    post:
+      operationId: getArgs

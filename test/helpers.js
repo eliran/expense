@@ -10,4 +10,5 @@ module.exports = {
 , Response: require('../lib/response')
 , Promise: require('q')
 , expect : chai.expect
+, swaggerReader: require('../lib/swaggerReader')
 }

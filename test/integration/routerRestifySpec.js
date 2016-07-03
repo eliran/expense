@@ -8,7 +8,12 @@ var helpers = require('../helpers')
 
 describe('restify http provider', function(){
   before(function(done){
-    this.client = restify.createJsonClient({url: helpers.API_TEST_URL})
+    this.client = restify.createJsonClient({
+      url: helpers.API_TEST_URL
+    , headers: {
+        'X-TOKEN': 'session-token-value'
+      }
+    })
     this.httpProvider = new RestifyHttpProvider()
     this.router = new Router(this.httpProvider)
     this.router.addRoutes(testRoutes, {
@@ -17,13 +22,20 @@ describe('restify http provider', function(){
     , getResource: function(){ return Response.ok('G') }
     , updateResource: function(){ return Response.ok('U') }
     , deleteResource: function(){ return Response.ok('D') }
-    , getArgs: function(req){ return Response.ok({ params: req.params, query: req.query, body: req.body }) }
+    , getArgs: function(req){ return Response.ok({ params: req.params, query: req.query, body: req.body, token: req['session-token'] }) }
     })
     this.httpProvider.listen(helpers.API_TEST_PORT, done)
   })
 
   after(function(){
     this.httpProvider.close()
+  })
+
+  it('\'X-TOKEN\' header to \'session-token\' request', function(done){
+    this.client.get('/echo', function(err, req, res, obj){
+      expect(obj).to.have.property('token', 'session-token-value')
+      done()
+    })
   })
 
   describe('passing request', function(){

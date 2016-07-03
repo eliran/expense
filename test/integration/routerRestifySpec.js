@@ -2,6 +2,7 @@ var helpers = require('../helpers')
   , expect = helpers.expect
   , Router = helpers.Router
   , Response = helpers.Response
+  , RestifyHttpProvider = require('../../lib/restifyHttpProvider')
   , restify = require('restify')
   , testRoutes = {
       '/resource': { 
@@ -18,7 +19,7 @@ var helpers = require('../helpers')
 describe('restify http provider', function(){
   before(function(done){
     this.client = restify.createJsonClient({url: helpers.API_TEST_URL})
-    this.httpProvider = restify.createServer()
+    this.httpProvider = new RestifyHttpProvider()
     this.router = new Router(this.httpProvider)
     this.router.addRoutes(testRoutes, {
       allResources : function(){ return new Response('A') }

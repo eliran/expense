@@ -21,21 +21,37 @@ describe('Response Object', function(){
     expect(response.body).to.equal('response')
   })
 
-  it('#internalError', function(){
-    var response = Response.internalError()
-    expect(response.status).to.equal(500)
-    expect(response.body).to.eql({
-      message: 'Internal Error'
-    , code: 'InternalError'
+  describe('#ok', function(){
+    it('with data: status 200', function(){
+      var response = Response.ok('value')
+      expect(response.status).to.equal(200)
+      expect(response.body).to.equal('value') 
+    })
+
+    it('without data: status 204', function(){
+      var response = Response.ok()
+      expect(response.status).to.equal(204)
+      expect(response.body).to.eql({})
     })
   })
 
-  it('#internalError with message', function(){
-    var response = Response.internalError('msg')
-    expect(response.status).to.equal(500)
-    expect(response.body).to.eql({
-      message: 'msg'
-    , code: 'InternalError'
+  describe('#internalError', function(){
+    it('with no message', function(){
+      var response = Response.internalError()
+      expect(response.status).to.equal(500)
+      expect(response.body).to.eql({
+        message: 'Internal Error'
+      , code: 'InternalError'
+      })
+    })
+
+    it('with message', function(){
+      var response = Response.internalError('msg')
+      expect(response.status).to.equal(500)
+      expect(response.body).to.eql({
+        message: 'msg'
+      , code: 'InternalError'
+      })
     })
   })
 })

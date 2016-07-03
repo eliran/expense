@@ -128,7 +128,7 @@ describe('User Controller', function(){
     describe('login user', function(){
       it('should be rejected with password mismatch', function(){
         return expect(userController.loginUser({ body: { loginName: userJSON.loginName, password: 'wrongPassword' } })).to.become({
-          status: 403
+          status: 401
         , body: {
             code: 'Unauthorized'
           , message: 'User or password mismatch'
@@ -138,7 +138,7 @@ describe('User Controller', function(){
 
       it('should reject if no such user', function(){
         return expect(userController.loginUser({ body: { loginName: 'unknownUser', password: 'wrongPassword' } })).to.become({
-          status: 403
+          status: 401
         , body: {
             code: 'Unauthorized'
           , message: 'User or password mismatch'

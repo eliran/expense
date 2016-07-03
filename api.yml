@@ -5,6 +5,28 @@ info:
   title: Simple Expense Tracker API
 host: 'localhost:8081'
 paths:
+  /login:
+    post:
+      description: User login
+      operationId: loginUser
+      parameters:
+      - name: body
+        in: body
+        schema: '#/definitions/loginUser'
+      responses:
+        '200':
+          description: user logged in
+          schema:
+            $ref: '#/definitions/loginToken'
+        '403':
+          description: user login failed
+          schema:
+            $ref: '#/definitions/errorModel'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+      
   /users:
     post:
       description: Create a new user
@@ -57,6 +79,8 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/errorModel'
+      security:
+        - 'x-token': []
   /users/{id}:
     get:
       description: Return a user
@@ -80,6 +104,8 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/errorModel'
+      security:
+        - 'x-token': []  
     put:
       description: Update a user
       operationId: updateUser
@@ -98,6 +124,8 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/errorModel'
+      security:
+        - 'x-token': []  
     delete:
       description: Delete a user
       operationId: deleteUser
@@ -114,6 +142,8 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/errorModel'
+      security:
+        - 'x-token': []  
   /users/{userId}/expenses:
     post:
       description: Create a new expense
@@ -137,6 +167,8 @@ paths:
           schema:
             $ref: '#/definitions/errorModel'
             
+      security:
+        - 'x-token': []  
     get:
       description: Get all expenses of a user
       operationId: getUserExpenses
@@ -190,6 +222,8 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/errorModel'
+      security:
+        - 'x-token': []  
 
   /users/{userId}/expenses/{id}:
     get:
@@ -217,6 +251,8 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/errorModel'
+      security:
+        - 'x-token': []  
     put:
       description: Update an expense
       operationId: updateUserExpense
@@ -242,6 +278,8 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/errorModel'
+      security:
+        - 'x-token': []  
       
     delete:
       description: Delete an expense
@@ -266,8 +304,29 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/errorModel'
+      security:
+        - 'x-token': []  
       
 definitions:
+  loginUser:
+    type: object
+    required:
+      - loginName
+      - password
+    properties:
+      loginName:
+        type: string
+      password:
+        type: string
+
+  loginToken:
+    type: object
+    required:
+      - token
+    properties:
+      token:
+        type: string
+
   newUser:
     type: object
     required:
@@ -284,6 +343,7 @@ definitions:
         type: string
       password:
         type: string
+
   user:
     type: object
     properties:
@@ -332,7 +392,7 @@ definitions:
         type: string
       comment:
         type: string
-    
+  
   errors:
     type: object
     required:

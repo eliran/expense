@@ -20,6 +20,7 @@
     "url": ""
   },
   "dependencies": {
+    "bcrypt": "^0.8.7",
     "js-yaml": "^3.6.1",
     "openrecord": "^1.10.11",
     "q": "^1.4.1",

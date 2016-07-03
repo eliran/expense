@@ -14,6 +14,13 @@ var helpers = require('../helpers')
       , put: { operationId: 'updateResource' }
       , delete: { operationId: 'deleteResource' } 
       }
+    , '/echo/:id/:other': {
+        get: { operationId: 'getArgs' }
+      }
+    , '/echo': {
+        get: { operationId: 'getArgs' }
+      , post: { operationId: 'getArgs' }
+      }
     }
 
 describe('restify http provider', function(){
@@ -22,11 +29,12 @@ describe('restify http provider', function(){
     this.httpProvider = new RestifyHttpProvider()
     this.router = new Router(this.httpProvider)
     this.router.addRoutes(testRoutes, {
-      allResources : function(){ return new Response('A') }
-    , newResource: function(){ return new Response('N') }
-    , getResource: function(){ return new Response('G') }
-    , updateResource: function(){ return new Response('U') }
-    , deleteResource: function(){ return new Response('D') }
+      allResources : function(){ return Response.ok('A') }
+    , newResource: function(){ return Response.ok('N') }
+    , getResource: function(){ return Response.ok('G') }
+    , updateResource: function(){ return Response.ok('U') }
+    , deleteResource: function(){ return Response.ok('D') }
+    , getArgs: function(req){ return Response.ok({ params: req.params, query: req.query, body: req.body }) }
     })
     this.httpProvider.listen(helpers.API_TEST_PORT, done)
   })
@@ -35,42 +43,74 @@ describe('restify http provider', function(){
     this.httpProvider.close()
   })
 
-  it('GET /resource', function(done){
-    this.client.get('/resource', function(err, req, res, obj){
-      expect(obj).to.equal('A')
-      done()
+  describe('passing request', function(){
+    it('should get path parameters', function(done){
+      this.client.get('/echo/123/abc', function(err, req, res, obj){
+        expect(obj.params).to.eql({
+          id: '123'
+        , other: 'abc'
+        })
+        done()
+      }) 
+    })
+
+    it('should get query parameters', function(done){
+      this.client.get('/echo?q=123&other=abc', function(err, req, res, obj){
+        expect(obj.query).to.eql({
+          q: '123'
+        , other: 'abc'
+        })
+        expect(obj.params).to.eql({})
+        done()
+      })
+    })
+
+    it('should get json body', function(done){
+      var body = { key1: 'value1', key2: 5, key3: false }
+      this.client.post('/echo', body, function(err, req, res, obj){
+        expect(obj.body).to.eql(body)
+        expect(obj.params).to.eql({})
+        done()
+      })
+
     })
   })
 
-  it('POST /resource', function(done){
-    this.client.post('/resource', {}, function(err, req, res, obj){
-      expect(obj).to.equal('N')
-      done()
+  describe('routing request to target object', function(){
+    it('GET /resource', function(done){
+      this.client.get('/resource', function(err, req, res, obj){
+        expect(obj).to.equal('A')
+        done()
+      })
+    })
+
+    it('POST /resource', function(done){
+      this.client.post('/resource', {}, function(err, req, res, obj){
+        expect(obj).to.equal('N')
+        done()
+      })
+    })
+
+    it('GET /resource/:id', function(done){
+      this.client.get('/resource/1', function(err, req, res, obj){
+        expect(obj).to.equal('G')
+        done()
+      })
+    })
+
+    it('PUT /resource/:id', function(done){
+      this.client.put('/resource/1', {}, function(err, req, res, obj){
+        expect(obj).to.equal('U')
+        done()
+      })
+    })
+
+    it('DELETE /resource/:id', function(done){
+      this.client.del('/resource/1', function(err, req, res, obj){
+        expect(obj).to.equal('D')
+        done()
+      })
     })
   })
-
-  it('GET /resource/:id', function(done){
-    this.client.get('/resource/:id', function(err, req, res, obj){
-      expect(obj).to.equal('G')
-      done()
-    })
-  })
-
-
-  it('PUT /resource/:id', function(done){
-    this.client.put('/resource/:id', {}, function(err, req, res, obj){
-      expect(obj).to.equal('U')
-      done()
-    })
-  })
-
-
-  it('DELETE /resource/:id', function(done){
-    this.client.del('/resource/:id', function(err, req, res, obj){
-      expect(obj).to.equal('D')
-      done()
-    })
-  })
-
 
 })

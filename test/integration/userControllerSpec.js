@@ -4,6 +4,7 @@ var helpers = require('../helpers')
   , expect = helpers.expect
   , store = helpers.store
   , Promise = helpers.Promise
+  , safePassword = helpers.safePassword
   , UserController = require('../../lib/userController')
 
 describe('User Controller', function(){
@@ -37,6 +38,28 @@ describe('User Controller', function(){
         expect(response.body).to.shallowDeepEqual(testUser)
         expect(response.body).to.have.property('role', 'user')
         expect(response.body).to.have.property('id')
+      })
+    })
+
+    it('should encrypt passwords', function(){
+      var mock = this.sinon.mock(safePassword)
+      mock.expects('encrypt').once().withArgs(this.testUser.password)
+      userController.newUser({ body: this.testUser })
+      mock.verify()
+    })
+
+    it('should report error if encryption of password fails', function(){
+      this.sinon.stub(safePassword, 'encrypt', function(password, callback){
+        return callback(null, 'Error')
+      })
+      return expect(userController.newUser({ body: this.testUser })).to.be.fulfilled.then(function(response){
+        expect(response).to.eql({
+          status: 500
+        , body: {
+            code: 'InternalError'
+          , message: 'Error'
+          }
+        })
       })
     })
 

@@ -1,6 +1,7 @@
 var chai = require('chai')
   , OpenRecord = require('openrecord')
   , Promise = require('q')
+  , sinon = require('sinon')
   , store = new OpenRecord({
       type: 'sqlite3'
     , file: ''
@@ -15,6 +16,14 @@ store.clearDatabase = function(){
   return Promise.when(store.Model('user').deleteAll(), store.Model('expense').deleteAll())
 }
 
+beforeEach(function() {
+  this.sinon = sinon.sandbox.create();
+})
+
+afterEach(function() {
+  this.sinon.restore();
+})
+
 module.exports = {
   API_TEST_PORT: 9999
 , API_TEST_URL: 'http://localhost:9999'
@@ -23,5 +32,6 @@ module.exports = {
 , Promise: Promise
 , expect: chai.expect
 , swaggerReader: require('../lib/swaggerReader')
+, safePassword: require('../lib/safePassword')
 , store: store
 }

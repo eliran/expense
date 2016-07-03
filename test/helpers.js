@@ -33,5 +33,7 @@ module.exports = {
 , expect: chai.expect
 , swaggerReader: require('../lib/swaggerReader')
 , safePassword: require('../lib/safePassword')
+, UserController: require('../lib/userController')
+, SessionController: require('../lib/sessionController')
 , store: store
 }

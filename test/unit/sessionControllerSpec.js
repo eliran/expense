@@ -1,6 +1,6 @@
 var helpers = require('../helpers')
   , expect = helpers.expect
-  , SessionController = require('../../lib/sessionController')
+  , SessionController = helpers.SessionController
 
 describe('Session Controller', function(){
   it('should be created with a secret', function(){

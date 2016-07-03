@@ -5,14 +5,15 @@ var helpers = require('../helpers')
   , store = helpers.store
   , Promise = helpers.Promise
   , safePassword = helpers.safePassword
-  , UserController = require('../../lib/userController')
+  , UserController = helpers.UserController
+  , SessionController = helpers.SessionController
   , FAKE_USER_PASSWORD = '12345678'
 
 describe('User Controller', function(){
   var userController
   beforeEach(function(done){
     store.ready(function(){
-      userController = new UserController(store)
+      userController = new UserController(store, new SessionController('secret'))
       done()
     })
   })
@@ -44,15 +45,13 @@ describe('User Controller', function(){
 
     it('should encrypt passwords', function(){
       var mock = this.sinon.mock(safePassword)
-      mock.expects('encrypt').once().withArgs(this.testUser.password)
+      mock.expects('pencrypt').once().withArgs(this.testUser.password).returns(new Promise('xxx'))
       userController.newUser({ body: this.testUser })
       mock.verify()
     })
 
     it('should report error if encryption of password fails', function(){
-      this.sinon.stub(safePassword, 'encrypt', function(password, callback){
-        return callback(null, 'Error')
-      })
+      this.sinon.stub(safePassword, 'pencrypt').returns(Promise.fcall(function(){ throw new Error('Error') }))
       return expect(userController.newUser({ body: this.testUser })).to.be.fulfilled.then(function(response){
         expect(response).to.eql({
           status: 500

@@ -6,6 +6,7 @@ var helpers = require('../helpers')
   , Promise = helpers.Promise
   , safePassword = helpers.safePassword
   , UserController = require('../../lib/userController')
+  , FAKE_USER_PASSWORD = '12345678'
 
 describe('User Controller', function(){
   var userController
@@ -119,72 +120,94 @@ describe('User Controller', function(){
     })
   })
 
-  describe('get user', function(){
+  describe('when having a user in database', function(){
     var userJSON
     beforeEach(function(){
       return createTempUser().then(function(user){ userJSON = user })
     })
 
-    it('should return a specific user', function(){
-      return expect(userController.getUser({ params: { id : userJSON.id } })).to.eventually.have.property('body').eql(userJSON)
-    })
+    describe('login user', function(){
+      it('should be rejected with password mismatch', function(){
+        return expect(userController.loginUser({ body: { loginName: userJSON.loginName, password: 'wrongPassword' } })).to.become({
+          status: 403
+        , body: {
+            code: 'Unauthorized'
+          , message: 'User or password mismatch'
+          }
+        })
+      })
 
-    it('should fail if no such user', function(){
-      return expect(userController.getUser({ params: { id : userJSON.id+1 } })).to.become({
-        status: 400
-      , body: {
-          code: 'Failed'
-        , message: 'no such user'
-        }
+      it('should reject if no such user', function(){
+        return expect(userController.loginUser({ body: { loginName: 'unknownUser', password: 'wrongPassword' } })).to.become({
+          status: 403
+        , body: {
+            code: 'Unauthorized'
+          , message: 'User or password mismatch'
+          }
+        })
+      })
+
+      it('should return a token if login succeed', function(){
+        var loginBody = { body: { loginName: userJSON.loginName, password: FAKE_USER_PASSWORD } }
+        return expect(userController.loginUser(loginBody)).to.be.fulfilled.then(function(response){
+          expect(response.status).to.equal(200)
+          expect(response.body).to.have.property('token')
+        })
       })
     })
-  })
+
+    describe('get user', function(){
+      it('should return a specific user', function(){
+        return expect(userController.getUser({ params: { id : userJSON.id } })).to.eventually.have.property('body').eql(userJSON)
+      })
+
+      it('should fail if no such user', function(){
+        return expect(userController.getUser({ params: { id : userJSON.id+1 } })).to.become({
+          status: 400
+        , body: {
+            code: 'Failed'
+          , message: 'no such user'
+          }
+        })
+      })
+    })
   
-  describe('update user', function(){
-    var userJSON
-    beforeEach(function(){
-      return createTempUser().then(function(user){ userJSON = user })
-    })
+    describe('update user', function(){
+      it('should update an existing user', function(){
+        return expect(userController.updateUser({ params: { id: userJSON.id }, body: {lastName: 'other'}})).to.be.become({
+          status: 200
+        , body: {
+            id: userJSON.id
+          , firstName: userJSON.firstName
+          , lastName: 'other'
+          , loginName: userJSON.loginName
+          , role: 'user'
+          }
+        })
+      })
 
-    it('should update an existing user', function(){
-      return expect(userController.updateUser({ params: { id: userJSON.id }, body: {lastName: 'other'}})).to.be.become({
-        status: 200
-      , body: {
-          id: userJSON.id
-        , firstName: userJSON.firstName
-        , lastName: 'other'
-        , loginName: userJSON.loginName
-        , role: 'user'
-        }
+      it('should fail if no such user', function(){
+        return expect(userController.updateUser({ params: { id: userJSON.id+1 }, body: {lastName: 'other'}})).to.be.become({
+          status: 400
+        , body: {
+            code: 'Failed'
+          , message: 'no such user'
+          }
+        })
+      })
+
+      it('should fail if new values are invalid', function(){
+        return expectToFail(userController.updateUser({ params: { id: userJSON.id }, body: {lastName: ''} }), 'errors.lastName[0]', 'field must not be blank')
       })
     })
 
-    it('should fail if no such user', function(){
-      return expect(userController.updateUser({ params: { id: userJSON.id+1 }, body: {lastName: 'other'}})).to.be.become({
-        status: 400
-      , body: {
-          code: 'Failed'
-        , message: 'no such user'
-        }
+    describe('delete user', function(){
+      it('should delete specific user', function(){
+        return expect(userController.deleteUser({ params: { id: userJSON.id } })).to.eventually.have.property('status', 204)
       })
     })
-
-    it('should fail if new values are invalid', function(){
-      return expectToFail(userController.updateUser({ params: { id: userJSON.id }, body: {lastName: ''} }), 'errors.lastName[0]', 'field must not be blank')
-    })
   })
-
-  describe('delete user', function(){
-    var userJSON
-    beforeEach(function(){
-      return createTempUser().then(function(user){ userJSON = user })
-    })
-
-    it('should delete specific user', function(){
-      return expect(userController.deleteUser({ params: { id: userJSON.id } })).to.eventually.have.property('status', 204)
-    })
-  })
-
+ 
   function expectToFail(promise, errorProperty, errorValue){
     return expect(promise).to.be.fulfilled.then(function(value){
       expect(value.status).to.equal(400)
@@ -200,7 +223,7 @@ describe('User Controller', function(){
         loginName: 'user' + useSalt + '@name.com'
       , firstName: 'user-' + useSalt
       , lastName: 'lastName'
-      , password: '12345678'
+      , password: FAKE_USER_PASSWORD
       }
     }).then(function(response){
       return response.body

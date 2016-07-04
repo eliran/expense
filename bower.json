@@ -1,0 +1,26 @@
+{
+  "name": "expense.angular",
+  "description": "TopTal Simple Expense Tracking App Client",
+  "main": "index.js",
+  "authors": [
+    "Eliran Ben-Ezra"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.7",
+    "bootstrap": "^3.3.6",
+    "angular-route": "^1.5.7",
+    "angular-resource": "^1.5.7"
+  },
+  "devDependencies": {
+    "angular-mocks": "^1.5.7"
+  }
+}

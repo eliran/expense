@@ -20,6 +20,17 @@ describe('Session Controller', function(){
       return expect(this.sessionController.create({})).to.eventually.be.a('string')
     })
 
+    describe('#operationAllowed', function(){
+      it('returns true if an operation allowed with associated request', function(){
+        this.sessionController.setAllowOperationForRole('role', 'doSomething', true)
+        expect(this.sessionController.operationAllowed('doSomething', { role: 'role' })).to.be.true
+      })
+      it('returns false if an operation disallowed with associated request', function(){
+        this.sessionController.setAllowOperationForRole('role', 'doSomething', false)
+        expect(this.sessionController.operationAllowed('doSomething', { role: 'role' })).to.be.false
+      })
+    })
+
     describe('active session', function(){
       beforeEach(function(){
         var self = this

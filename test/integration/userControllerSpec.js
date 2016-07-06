@@ -13,7 +13,9 @@ describe('User Controller', function(){
   var userController
   beforeEach(function(done){
     store.ready(function(){
-      userController = new UserController(store, new SessionController('secret'))
+      var sessionController = new SessionController('secret')
+      sessionController.allowOperationForRole('admin', 'setRole')
+      userController = new UserController(store, sessionController)
       done()
     })
   })
@@ -28,6 +30,7 @@ describe('User Controller', function(){
     , firstName: 'name'
     , lastName: 'last'
     , password: '12345678'
+    , role: 'admin'
     }
   })
 
@@ -37,9 +40,21 @@ describe('User Controller', function(){
       return expect(userController.newUser({ body: testUser })).to.be.fulfilled.then(function(response){
         delete testUser.password
         expect(response.status).to.equal(201)
-        expect(response.body).to.shallowDeepEqual(testUser)
-        expect(response.body).to.have.property('role', 'user')
-        expect(response.body).to.have.property('id')
+        expect(response.body).to.eql({
+          role: 'user'
+        , id: response.body.id
+        , firstName: testUser.firstName
+        , loginName: testUser.loginName
+        , lastName: testUser.lastName
+        })
+      })
+    })
+
+    it('should allow creating a user with role when eleveated role are logged in', function(){
+      var testUser = this.testUser
+      return expect(userController.newUser({ session: { role: 'admin' }, body: testUser })).to.be.fulfilled.then(function(response){
+        expect(response.status).to.equal(201)
+        expect(response.body).to.have.property('role', 'admin')
       })
     })
 
@@ -195,7 +210,7 @@ describe('User Controller', function(){
   
     describe('update user', function(){
       it('should update an existing user', function(){
-        return expect(userController.updateUser({ params: { id: userJSON.id }, body: {lastName: 'other'}})).to.be.become({
+        return expect(userController.updateUser({ params: { id: userJSON.id }, body: {lastName: 'other', role: 'admin'}})).to.become({
           status: 200
         , body: {
             id: userJSON.id
@@ -207,8 +222,26 @@ describe('User Controller', function(){
         })
       })
 
+      it('should update role of user when session have an elevented role', function(){
+        var testUser = this.testUser
+        return expect(userController.updateUser({ session: { role: 'admin' }, params: { id: userJSON.id }, body: {role: 'admin'}})).to.be.fulfilled.then(function(response){
+          expect(response.status).to.equal(200)
+          expect(response.body).to.have.property('role', 'admin')
+        })
+      })
+
+      it('should validate role before update', function(){
+        return expect(userController.updateUser({ params: { id: userJSON.id }, body: {role: 'unknown'}})).to.become({
+          status: 400
+        , body: {
+            code: 'UnknownRole'
+          , message: 'Unknown role'
+          }
+        })
+      })
+
       it('should fail if no such user', function(){
-        return expect(userController.updateUser({ params: { id: userJSON.id+1 }, body: {lastName: 'other'}})).to.be.become({
+        return expect(userController.updateUser({ params: { id: userJSON.id+1 }, body: {lastName: 'other'}})).to.become({
           status: 400
         , body: {
             code: 'Failed'

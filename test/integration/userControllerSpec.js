@@ -98,6 +98,11 @@ describe('User Controller', function(){
       return expectCreateUserToFail(this.testUser, 'errors.password[0]', 'password is too short')
     })
 
+    it('should reject unknown roles', function(){
+      this.testUser.role = 'unknown'
+      return expectCreateUserToFail(this.testUser, 'errors.role[0]', 'unknown role')
+    })
+
     function expectCreateUserToFail(user, errorProperty, errorValue){
       return expectToFail(userController.newUser({ body: user }), errorProperty, errorValue)
     }
@@ -123,6 +128,23 @@ describe('User Controller', function(){
     var userJSON
     beforeEach(function(){
       return createTempUser().then(function(user){ userJSON = user })
+    })
+
+    it('should not allow creating a user with same loginName', function(){
+      return expect(userController.newUser({
+        body: { 
+          loginName: userJSON.loginName
+        , firstName: 'other'
+        , lastName: 'other'
+        , password: '12345678' 
+        }
+      })).to.become({
+        status: 400
+      , body: {
+          code: 'AlreadyExists'
+        , message: 'Login name in use'
+        }
+      })
     })
 
     describe('login user', function(){

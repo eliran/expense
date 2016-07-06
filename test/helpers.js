@@ -1,19 +1,15 @@
 var chai = require('chai')
-  , OpenRecord = require('openrecord')
   , Promise = require('q')
   , sinon = require('sinon')
-  , store = new OpenRecord({
-      type: 'sqlite3'
-    , file: ''
-    , migrations: __dirname + '/../migrations/*.js'
-    , models: __dirname + '/../lib/models/*.js'
-    })
+  , DataStore = require('../lib/dataStore')
+  , dataStore = new DataStore(__dirname + '/../database.json', 'test')
+  , store = dataStore.getStore()
 
 chai.use(require('chai-as-promised'))
 chai.use(require('chai-shallow-deep-equal'))
 
 store.clearDatabase = function(){
-  return Promise.when(store.Model('user').deleteAll(), store.Model('expense').deleteAll())
+  return Promise.when(store.Model('user').where({id_not: 1}).deleteAll(), store.Model('expense').deleteAll())
 }
 
 beforeEach(function() {

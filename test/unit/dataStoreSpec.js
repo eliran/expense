@@ -3,7 +3,6 @@ var helpers = require('../helpers')
   , DataStore = require('../../lib/dataStore')
 
 describe('Data store', function(){
-
    
   it('#readConfigFile should return JSON config', function(){
      expect(readConfig()).to.have.keys('$common','development', 'production', 'default')
@@ -38,11 +37,16 @@ describe('Data store', function(){
   })
  
   it('#praseConfig: returns config values of $keys expend from object param', function(){
-    expect(DataStore.parseConfig(readConfig(), 'production', { NODE_ENV: 'fromEnv' })).to.eql({
+    expect(DataStore.parseConfig(readConfig(), 'production', { NODE_ENV: 'fromEnv' }, '/test')).to.eql({
       'var': 'fromEnv'
     , other: 'NODE_ENV'
+    , expendPath:'/test/file'
     , common: 'common'
     })
+  })
+
+  it('#getConfig: expends path relative to config file path', function(){
+    expect(DataStore.getConfig(configFileName(), 'production')).to.have.property('expendPath', __dirname + '/file')
   })
 
   it('#getConfig(string): loads a file with development env', function(){

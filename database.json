@@ -1,0 +1,17 @@
+{ 
+  "development": {
+    "type": "mysql"
+  , "host": "localhost"
+  , "database": "expense"
+  , "user": "root"
+  , "password": ""
+  }
+, "test": {
+    "type": "sqlite3"
+  , "$$file": "./testStore"
+  }
+, "$common": {
+    "$$models": "./lib/models/*.js"
+  , "$$migrations": "./migrations/*.js"
+  }
+}

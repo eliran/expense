@@ -18,7 +18,7 @@ paths:
           description: user logged in
           schema:
             $ref: '#/definitions/loginToken'
-        '403':
+        '401':
           description: user login failed
           schema:
             $ref: '#/definitions/errorModel'

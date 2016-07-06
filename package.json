@@ -10,7 +10,7 @@
     "pretest": "jshint *.js lib/*.js && jscs *.js lib/*.js",
     "test": "node_modules/.bin/mocha --recursive",
     "posttest": "npm run cover",
-    "autotest": "node_modules/.bin/mocha -w",
+    "autotest": "node_modules/.bin/mocha --recursive -w",
     "cover": "istanbul cover node_modules/.bin/_mocha -- --recursive --reporter=min",
     "start": "node index.js"
   },

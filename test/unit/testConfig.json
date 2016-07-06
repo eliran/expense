@@ -1,0 +1,15 @@
+{
+  "production": {
+    "$var" : "NODE_ENV"
+  , "other": "NODE_ENV"
+  }
+, "development": {
+    "key": "dev"
+  }
+, "default": {
+    "key": "default"
+  }
+, "$common": {
+    "common": "common"
+  }
+}

@@ -4,7 +4,7 @@
   "description": "TopTal Simple Expense Tracking App REST Server",
   "main": "index.js",
   "engines": {
-    "node": "0.10.x"
+    "node": "5.6.0"
   },
   "scripts": {
     "pretest": "jshint *.js lib/*.js && jscs *.js lib/*.js",

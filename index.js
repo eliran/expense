@@ -1,9 +1,9 @@
 var swaggerReader = require('./lib/swaggerReader')
   , RestifyHttpProvider = require('./lib/restifyHttpProvider')
-  , Router = require('./lib/Router')
-  , UserController = require('./lib/UserController')
-  , ExpenseController = require('./lib/ExpenseController')
-  , SessionController = require('./lib/SessionController')
+  , Router = require('./lib/router')
+  , UserController = require('./lib/userController')
+  , ExpenseController = require('./lib/expenseController')
+  , SessionController = require('./lib/sessionController')
   , DataStore = require('./lib/dataStore')
   , logger = require('./logger')
   , SPEC_FILE = __dirname + '/api.yml'

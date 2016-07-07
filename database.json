@@ -7,7 +7,7 @@
   , "password": ""
   }
 , "production": {
-    "type": "pg"
+    "type": "postgres"
   , "host": "ec2-54-243-249-154.compute-1.amazonaws.com"
   , "port": "5432"
   , "database": "db5p8s577g65bd"

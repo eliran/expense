@@ -14,13 +14,13 @@ connectDatabase(function(store){
     , userController = new UserController(store, sessionController)
     , expenseController = new ExpenseController(store, sessionController)
     , apiSpec = swaggerReader(SPEC_FILE)
-    , port = apiSpec.hostPort
+    , port = process.env.PORT || apiSpec.hostPort
 
   sessionController.registerRoles([ 'admin', 'manager', 'user' ])
   allowUserManagerForRole('admin')
   allowUserManagerForRole('manager')
 
-  createServerWithSpecification(apiSpec, [ userController , expenseController ], sessionController).listen(apiSpec.hostPort, function(){
+  createServerWithSpecification(apiSpec, [ userController , expenseController ], sessionController).listen(port, function(){
     console.log('Server started at port ' + port)
   })
 

@@ -233,6 +233,71 @@ describe('User Controller', function(){
         })
       })
 
+      it('should allow updating user record if session has the same user regardless of role', function(){
+        var session = { role: 'unknown', userId: userJSON.id }
+          , body = { lastName: 'other', role: 'admin' }
+        return expect(userController.updateUser({ session: session, params: { id: userJSON.id }, body: body}))
+          .to.eventually.have.property('status', 200)
+      })
+
+      it('should not be able to change loginName', function(){
+        return expect(userController.updateUser({ params: { id: userJSON.id }, body: { loginName: 'someOther@ok.com' }})).to.become({
+          status: 400
+        , body: {
+            code: 'NotAllowed'
+          , message: 'Changing loginName is not allowed'
+          }
+        })
+      })
+
+      it('should not be able to change password', function(){
+        return expect(userController.updateUser({ params: { id: userJSON.id }, body: { epassword: 'bad password' } })).to.eventually.have.property('status', 401)
+      })
+
+      describe('changing password', function(){
+        it('should allow a user to change password by providing its current password (must have a token also)', function(){
+          return expect(userController.updateUser({ 
+            session: { userId: userJSON.id }
+          , params: { id: userJSON.id }
+          , body: {
+              password: FAKE_USER_PASSWORD
+            , newPassword: 'different'
+            }
+          })).to.eventually.have.property('status', 204)
+        })
+
+        it('should reject with 401 if password is wrong', function(){
+          return expect(userController.updateUser({ 
+            session: { userId: userJSON.id }
+          , params: { id: userJSON.id }
+          , body: {
+              password: 'wrongPassword'
+            , newPassword: 'different'
+            }
+          })).to.eventually.have.property('status', 401)
+        })
+
+        it('should reject with 401 if no token', function(){
+          return expect(userController.updateUser({ 
+            params: { id: userJSON.id }
+          , body: {
+              password: FAKE_USER_PASSWORD
+            , newPassword: 'different'
+            }
+          })).to.eventually.have.property('status', 401)
+        })
+  
+        it('should allow password change without current password using admin role', function(){
+          return expect(userController.updateUser({ 
+            session: { userId: userJSON.id+1, role: 'admin' }
+          , params: { id: userJSON.id }
+          , body: {
+              newPassword: 'different'
+            }
+          })).to.eventually.have.property('status', 204)
+        })
+      })
+
       it('should return unauthorized if wrong role', function(){
         return expect(userController.updateUser({ session: { role: 'other' }, params: { id: userJSON.id }, body: { lastName: 'name'}})).to.eventually.have.property('status', 401)
       })

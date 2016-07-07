@@ -31,6 +31,7 @@ module.exports = {
 , safePassword: require('../lib/safePassword')
 , UserController: require('../lib/userController')
 , ExpenseController: require('../lib/expenseController')
+, ExpenseReportsController: require('../lib/expenseReportsController')
 , SessionController: require('../lib/sessionController')
 , store: store
 }

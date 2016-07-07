@@ -3,6 +3,7 @@ var swaggerReader = require('./lib/swaggerReader')
   , Router = require('./lib/router')
   , UserController = require('./lib/userController')
   , ExpenseController = require('./lib/expenseController')
+  , ExpenseReportsController = require('./lib/expenseReportsController')
   , SessionController = require('./lib/sessionController')
   , DataStore = require('./lib/dataStore')
   , logger = require('./logger')
@@ -14,6 +15,7 @@ getSecretKey(function(SECRET_KEY){
     var sessionController = new SessionController(SECRET_KEY)
       , userController = new UserController(store, sessionController)
       , expenseController = new ExpenseController(store, sessionController)
+      , expenseReportsController = new ExpenseReportsController(expenseController)
       , apiSpec = swaggerReader(SPEC_FILE)
       , port = process.env.PORT || apiSpec.hostPort
 
@@ -21,7 +23,7 @@ getSecretKey(function(SECRET_KEY){
     allowUserManagerForRole('admin')
     allowUserManagerForRole('manager')
 
-    createServerWithSpecification(apiSpec, [ userController , expenseController ], sessionController).listen(port, function(){
+    createServerWithSpecification(apiSpec, [ userController, expenseController, expenseReportsController ], sessionController).listen(port, function(){
       console.log('REST Server started at port ' + port )
     })
 

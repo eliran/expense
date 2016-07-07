@@ -16,16 +16,21 @@ describe('User Controller: Unit', function(){
 
   it('should invoke sessionController#create with userId & role', function(){
     this.mockSessionController.expects('create').withArgs({userId: 123, role: 'a-role'}).returns(Promise.fcall(function(){ return 'xxx'}))
-    this.userController.createSession(123, 'a-role')
+    this.userController.createSession({ id: 123, role: 'a-role'})
     this.mockSessionController.verify()
   })
 
   it('#createSession should return token when successful', function(){
     this.mockSessionController.expects('create').returns(Promise.fcall(function(){ return 'xxx'}))
-    return expect(this.userController.createSession(123, 'a-role')).to.become({
+    return expect(this.userController.createSession({ id: 123, role: 'a-role', loginName: 'l', firstName: 'f', lastName: 'l' })).to.become({
       status: 200
     , body: {
         token: 'xxx'
+      , role: 'a-role'
+      , id: 123
+      , loginName: 'l'
+      , firstName: 'f'
+      , lastName: 'l'
       }
     })
   })

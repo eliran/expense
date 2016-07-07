@@ -147,14 +147,14 @@ describe('Expense Controller', function(){
     it('should be able to read all expenses', function(){
       return expect(expenseController.getUserExpenses(createRequest())).to.be.fulfilled.and.then(function(response){
         expect(response.status).to.equal(200)
-        expect(response.body.expenses).to.have.length(10)
-        expect(response.body.expenses[0]).to.have.keys('id', 'comment', 'dateTime', 'description', 'amount')
+        expect(response.body).to.have.length(10)
+        expect(response.body[0]).to.have.keys('id', 'comment', 'dateTime', 'description', 'amount')
       })
     })
 
     it('should sort expenses by date DESC', function(){
       return expect(expenseController.getUserExpenses(createRequest())).to.be.fulfilled.and.then(function(response){
-        var expenses = response.body.expenses
+        var expenses = response.body
           , lastExpenseTime = expenses[0].dateTime
         for ( var i = 1; i < expenses.length; ++i ) {
           var curExpenseTime = expenses[i].dateTime
@@ -175,31 +175,31 @@ describe('Expense Controller', function(){
     it('should allow filtering after startDate', function(){
       return expect(expenseController.getUserExpenses(createFilterRequest({startDate: DUMMY_DATE + 5*60*60})))
         .to.eventually.have.property('body')
-           .that.have.property('expenses').that.have.length(5)
+           .that.have.length(5)
     })
 
     it('should allow filtering before endDate', function(){
       return expect(expenseController.getUserExpenses(createFilterRequest({endDate: DUMMY_DATE + 5*60*60})))
         .to.eventually.have.property('body')
-           .that.have.property('expenses').that.have.length(6)
+           .that.have.length(6)
     })
 
     it('should allow filtering by text', function(){
       return expect(expenseController.getUserExpenses(createFilterRequest({query: 'four'})))
         .to.eventually.have.property('body')
-           .that.have.property('expenses').that.have.length(5)
+           .that.have.length(5)
     })
 
     it('should allow limiting results', function(){
       return expect(expenseController.getUserExpenses(createFilterRequest({limit: 3})))
         .to.eventually.have.property('body')
-           .that.have.property('expenses').that.have.length(3)
+           .that.have.length(3)
     })
 
     it('should allow offset results', function(){
       return expect(expenseController.getUserExpenses(createFilterRequest({offset: 6})))
         .to.eventually.have.property('body')
-           .that.have.property('expenses').that.have.length(4)
+           .that.have.have.length(4)
     })
 
 

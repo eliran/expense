@@ -133,7 +133,7 @@ describe('User Controller', function(){
 
     it('should return all users', function(){
       return expect(userController.findUsers()).to.be.fulfilled.then(function(response){
-        var users = response.body.users
+        var users = response.body
         expect(response.status).to.equal(200)
         expect(users).to.have.length(10 + 1) // Admin is always there
         expect(users[0]).to.have.keys('id', 'loginName', 'firstName', 'lastName', 'role')
@@ -190,11 +190,11 @@ describe('User Controller', function(){
         })
       })
 
-      it('should return a token if login succeed', function(){
+      it('should return a token & user record if login succeed', function(){
         var loginBody = { body: { loginName: userJSON.loginName, password: FAKE_USER_PASSWORD } }
         return expect(userController.loginUser(loginBody)).to.be.fulfilled.then(function(response){
           expect(response.status).to.equal(200)
-          expect(response.body).to.have.property('token')
+          expect(response.body).to.have.keys('token', 'loginName', 'id', 'firstName', 'lastName', 'role')
         })
       })
     })

@@ -1,3 +1,6 @@
 ---
 swagger: '2.0'
 host: 'localhost:1234'
+basePath: /basePath
+paths:
+  /path:

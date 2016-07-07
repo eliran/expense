@@ -8,6 +8,10 @@ describe('Swagger Reader', function(){
     expect(doc.json).to.eql({
       host: 'localhost:1234'
     , swagger: '2.0'
+    , basePath: '/basePath'
+    , paths: {
+        '/path': null
+      }
     })
   })
 
@@ -19,5 +23,10 @@ describe('Swagger Reader', function(){
   it('should return host port', function(){
     var doc = swaggerReader(__dirname + '/simple.yml')
     expect(doc.hostPort).to.equal(1234)
+  })
+
+  it('should return paths with prepended by base path', function(){
+    var doc = swaggerReader(__dirname + '/simple.yml')
+    expect(doc.paths).to.have.keys('/basePath/path')
   })
 })

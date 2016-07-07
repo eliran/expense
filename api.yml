@@ -3,16 +3,22 @@ swagger: '2.0'
 info:
   version: 0.9.0
   title: Simple Expense Tracker API
-host: 'localhost'
+  description: |
+    Toptal Sample application REST API Specification
+host: simple-expense-tracker.herokuapp.com
+schemes:
+ - https
+basePath: /api
 paths:
   /login:
     post:
       description: User login
       operationId: loginUser
       parameters:
-      - name: body
-        in: body
-        schema: '#/definitions/loginUser'
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/loginUser'
       responses:
         '200':
           description: user logged in
@@ -32,10 +38,10 @@ paths:
       description: Create a new user
       operationId: newUser
       parameters:
-      - name: body
-        in: body
-        schema:
-          $ref: '#/definitions/newUser'
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/newUser'
       responses:
         '201':
           description: user created
@@ -306,6 +312,12 @@ paths:
             $ref: '#/definitions/errorModel'
       security:
         - 'x-token': []  
+
+securityDefinitions:
+  'x-token':
+    type: apiKey
+    in: header
+    name: 'X-TOKEN'
       
 definitions:
   loginUser:

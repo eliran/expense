@@ -1,8 +1,8 @@
 var safePassword = require('../lib/safePassword')
+
 module.exports = function(){
   this.seed(function(store, done){
     var User = store.Model('user');
-    console.log('Creating a user: ', User)
     safePassword.pencrypt('adminPassword').then(function(encryptedPassword){
       console.log('Password: ', encryptedPassword)
       return User.create({
@@ -11,12 +11,9 @@ module.exports = function(){
       , lastName: 'root'
       , role: 'admin'
       , epassword: encryptedPassword
-      }).then(function(err){
-         console.log('Finished with user: ', err)
-         done(err)
+      }).then(function(){
+         done()
       })
-    }, function(error){
-      console.log('Failed generating password for admin user')
     })
   })
 }

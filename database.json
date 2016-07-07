@@ -1,12 +1,12 @@
 { 
-  "development": {
+  "test": {
     "type": "mysql"
   , "host": "localhost"
   , "database": "expense"
   , "user": "root"
   , "password": ""
   }
-, "test": {
+, "development": {
     "type": "sqlite3"
   , "$$file": "./testStore"
   }

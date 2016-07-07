@@ -15,6 +15,8 @@ describe('User Controller', function(){
     store.ready(function(){
       var sessionController = new SessionController('secret')
       sessionController.allowOperationForRole('admin', 'setRole')
+      sessionController.allowOperationForRole('user', 'manageUsers')
+      sessionController.allowOperationForRole('admin', 'manageUsers')
       userController = new UserController(store, sessionController)
       done()
     })
@@ -137,6 +139,11 @@ describe('User Controller', function(){
         expect(users[0]).to.have.keys('id', 'loginName', 'firstName', 'lastName', 'role')
       })
     })
+
+    it('should return unauthorized if wrong role', function(){
+      return expect(userController.findUsers({ session: { role: 'other' } })).to.eventually.have.property('status', 401)
+    })
+
   })
 
   describe('when having a user in database', function(){
@@ -197,6 +204,10 @@ describe('User Controller', function(){
         return expect(userController.getUser({ params: { id : userJSON.id } })).to.eventually.have.property('body').eql(userJSON)
       })
 
+      it('should return unauthorized if wrong role', function(){
+        return expect(userController.getUser({ session: { role: 'other' }, params: {id: userJSON.id}})).to.eventually.have.property('status', 401)
+      })
+
       it('should fail if no such user', function(){
         return expect(userController.getUser({ params: { id : userJSON.id+1 } })).to.become({
           status: 400
@@ -220,6 +231,10 @@ describe('User Controller', function(){
           , role: 'user'
           }
         })
+      })
+
+      it('should return unauthorized if wrong role', function(){
+        return expect(userController.updateUser({ session: { role: 'other' }, params: { id: userJSON.id }, body: { lastName: 'name'}})).to.eventually.have.property('status', 401)
       })
 
       it('should update role of user when session have an elevented role', function(){
@@ -259,6 +274,11 @@ describe('User Controller', function(){
       it('should delete specific user', function(){
         return expect(userController.deleteUser({ params: { id: userJSON.id } })).to.eventually.have.property('status', 204)
       })
+
+      it('should return unauthorized if wrong role', function(){
+        return expect(userController.deleteUser({ session: { role: 'other' }, params: {id: userJSON.id}})).to.eventually.have.property('status', 401)
+      })
+
     })
   })
  

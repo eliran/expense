@@ -30,6 +30,7 @@ module.exports = {
 , swaggerReader: require('../lib/swaggerReader')
 , safePassword: require('../lib/safePassword')
 , UserController: require('../lib/userController')
+, ExpenseController: require('../lib/expenseController')
 , SessionController: require('../lib/sessionController')
 , store: store
 }

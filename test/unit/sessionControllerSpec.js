@@ -29,6 +29,15 @@ describe('Session Controller', function(){
         this.sessionController.setAllowOperationForRole('role', 'doSomething', false)
         expect(this.sessionController.operationAllowed('doSomething', { role: 'role' })).to.be.false
       })
+      it('if no role provided it defaults to user', function(){
+        this.sessionController.setAllowOperationForRole('user', 'doSomething', true)
+        expect(this.sessionController.operationAllowed('doSomething')).to.be.true
+      })
+
+      it('if operation is not defined it defaults to false', function(){
+        expect(this.sessionController.operationAllowed('doSomething')).to.be.false
+      })
+
     })
 
     describe('active session', function(){

@@ -22,7 +22,7 @@ getSecretKey(function(SECRET_KEY){
     allowUserManagerForRole('manager')
 
     createServerWithSpecification(apiSpec, [ userController , expenseController ], sessionController).listen(port, function(){
-      console.log('REST Server started at port ' + port)
+      console.log('REST Server started at port ' + port )
     })
 
     function allowUserManagerForRole(role){
@@ -55,5 +55,6 @@ function createServerWithSpecification(spec, controllers, sessionController){
   var server = new RestifyHttpProvider(logger.defaultLogger)
     , router = new Router(server, sessionController)
   router.addRoutes(spec.paths, controllers)
+  server.staticPath( '/' , './public')
   return server
 }

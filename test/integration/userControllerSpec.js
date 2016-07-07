@@ -140,6 +140,14 @@ describe('User Controller', function(){
       })
     })
 
+    it('can limit returned users', function(){
+      return expect(userController.findUsers({ query: { limit: 2 }})).to.be.eventually.have.property('body').that.have.length(2)
+    })
+
+    it('can offset returned users', function(){
+      return expect(userController.findUsers({ query: { offset: 2 }})).to.be.eventually.have.property('body').that.have.length(8 + 1)
+    })
+
     it('should return unauthorized if wrong role', function(){
       return expect(userController.findUsers({ session: { role: 'other' } })).to.eventually.have.property('status', 401)
     })

@@ -111,9 +111,23 @@ describe('REST API Router', function(){
         expect(function(){ router.createInvoker({}, 1)}).to.throw()
       })
 
-      it('throws if object is not an object', function(){
+      it('throws if object is not an object or an array', function(){
         var router = this.router
         expect(function(){ router.createInvoker('notAnObject', 'method') }).to.throw()
+      })
+
+      describe('array of target objects', function(){
+        var result, obj1, obj2
+        beforeEach(function(){
+          result = ''
+          obj1 = { methodA: function(){ result = result + 'A' } }
+          obj2 = { methodB: function(){ result = result + 'B' } }
+        })
+        it('invokes the method of the object that has a function with that name', function(){
+          this.router.createInvoker([obj1, obj2], 'methodA')({}, mockResponse(), function(){})
+          this.router.createInvoker([obj1, obj2], 'methodB')({}, mockResponse(), function(){})
+          expect(result).to.equal('AB')
+        })
       })
 
       describe('invoker function', function(){
@@ -213,6 +227,7 @@ describe('REST API Router', function(){
         var self = this
         expect(function(){ self.router.addRoute('unknown', '/path', {}, 'method') }).to.throw()
       })
+
     })
 
     describe('#addRoutes', function(){

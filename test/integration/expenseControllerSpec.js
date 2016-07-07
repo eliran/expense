@@ -30,7 +30,7 @@ describe('Expense Controller', function(){
 
   describe('Create expense', function(){
     it('should create an expense when valid', function(){
-      return expect(expenseController.createExpense(createRequest(sampleExpense))).to.be.fulfilled.and.then(function(response){
+      return expect(expenseController.newUserExpense(createRequest(sampleExpense))).to.be.fulfilled.and.then(function(response){
         expect(response.status).to.equal(201)
         sampleExpense.id = response.body.id
         expect(response.body).to.eql(sampleExpense)
@@ -38,21 +38,21 @@ describe('Expense Controller', function(){
     })
 
     it('should block requests if not the logged in user', function(){
-      return expect(expenseController.createExpense(createRequest(sampleExpense, { userId: 2 }))).to.be.eventually.have.property('status', 401)
+      return expect(expenseController.newUserExpense(createRequest(sampleExpense, { userId: 2 }))).to.be.eventually.have.property('status', 401)
     })
 
     it('should allow requests from a different user if it is an admin', function(){
-      return expect(expenseController.createExpense(createRequest(sampleExpense, { userId: 2, role: 'admin' }))).to.be.eventually.have.property('status', 201)
+      return expect(expenseController.newUserExpense(createRequest(sampleExpense, { userId: 2, role: 'admin' }))).to.be.eventually.have.property('status', 201)
     })
 
     it('fails if amount is smaller than 1', function(){
       sampleExpense.amount = 0
-      return expect(expenseController.createExpense(createRequest(sampleExpense))).to.be.eventually.have.property('status', 400)
+      return expect(expenseController.newUserExpense(createRequest(sampleExpense))).to.be.eventually.have.property('status', 400)
     })
 
     it('fails if description is blank', function(){
       sampleExpense.description = '    '
-      return expect(expenseController.createExpense(createRequest(sampleExpense))).to.be.eventually.have.property('status', 400)
+      return expect(expenseController.newUserExpense(createRequest(sampleExpense))).to.be.eventually.have.property('status', 400)
     })
 
   })
@@ -60,32 +60,32 @@ describe('Expense Controller', function(){
   describe('when having an expense', function(){
     var currentExpense
     beforeEach(function(){
-      return expenseController.createExpense(createRequest(sampleExpense)).then(function(expense){
+      return expenseController.newUserExpense(createRequest(sampleExpense)).then(function(expense){
         currentExpense = expense.body
       })
     })
 
     describe('Get expense', function(){
       it('should read an expense', function(){
-        return expect(expenseController.getExpense(createRequest({},{},currentExpense.id))).to.eventually.have.property('body').eql(currentExpense)
+        return expect(expenseController.getUserExpense(createRequest({},{},currentExpense.id))).to.eventually.have.property('body').eql(currentExpense)
       })
 
       it('should reject if no such expense', function(){
-        return expect(expenseController.getExpense(createRequest({},{},currentExpense.id+1))).to.eventually.have.property('status', 400)
+        return expect(expenseController.getUserExpense(createRequest({},{},currentExpense.id+1))).to.eventually.have.property('status', 400)
       })
 
       it('should block requests if not the logged in user', function(){
-        return expect(expenseController.getExpense(createRequest({},{ userId: 2 },currentExpense.id))).to.eventually.have.property('status', 401)
+        return expect(expenseController.getUserExpense(createRequest({},{ userId: 2 },currentExpense.id))).to.eventually.have.property('status', 401)
       })
 
       it('should allow requests from a different user if it is an admin', function(){
-        return expect(expenseController.getExpense(createRequest({},{ userId: 2, role: 'admin' },currentExpense.id))).to.eventually.have.property('status', 200)
+        return expect(expenseController.getUserExpense(createRequest({},{ userId: 2, role: 'admin' },currentExpense.id))).to.eventually.have.property('status', 200)
       })
     })
 
     describe('Update expense', function(){
       it('should update an expense', function(){
-        return expect(expenseController.updateExpense(createRequest({ amount: 123 },{},currentExpense.id))).be.fulfilled.and.then(function(response){
+        return expect(expenseController.updateUserExpense(createRequest({ amount: 123 },{},currentExpense.id))).be.fulfilled.and.then(function(response){
           sampleExpense.amount = 123
           sampleExpense.id = response.body.id
           expect(response.body).to.eql(sampleExpense)
@@ -94,34 +94,34 @@ describe('Expense Controller', function(){
       })
 
       it('should reject if no such expense', function(){
-        return expect(expenseController.updateExpense(createRequest({ amount: 1 },{},currentExpense.id+1))).be.eventually.have.property('status', 400)        
+        return expect(expenseController.updateUserExpense(createRequest({ amount: 1 },{},currentExpense.id+1))).be.eventually.have.property('status', 400)        
       })
 
       it('should reject if values don\'t validate', function(){
-        return expect(expenseController.updateExpense(createRequest({ amount: 0 },{},currentExpense.id))).be.eventually.have.property('status', 400)        
+        return expect(expenseController.updateUserExpense(createRequest({ amount: 0 },{},currentExpense.id))).be.eventually.have.property('status', 400)        
       })
 
       it('should block requests if not the logged in user', function(){
-        return expect(expenseController.updateExpense(createRequest({ amount: 1 },{ userId: 2 },currentExpense.id))).to.eventually.have.property('status', 401)
+        return expect(expenseController.updateUserExpense(createRequest({ amount: 1 },{ userId: 2 },currentExpense.id))).to.eventually.have.property('status', 401)
       })
 
       it('should allow requests from a different user if it is an admin', function(){
-        return expect(expenseController.updateExpense(createRequest({ amount: 1 },{ userId: 2, role: 'admin' },currentExpense.id))).to.eventually.have.property('status', 200)
+        return expect(expenseController.updateUserExpense(createRequest({ amount: 1 },{ userId: 2, role: 'admin' },currentExpense.id))).to.eventually.have.property('status', 200)
       })
       
     })
 
     describe('Delete expense', function(){
       it('should delete an expense', function(){
-        return expect(expenseController.deleteExpense(createRequest({},{},currentExpense.id))).to.eventually.have.property('status', 204)
+        return expect(expenseController.deleteUserExpense(createRequest({},{},currentExpense.id))).to.eventually.have.property('status', 204)
       })
 
       it('should block requests if not the logged in user', function(){
-        return expect(expenseController.deleteExpense(createRequest({}, { userId: 2 },currentExpense.id))).to.eventually.have.property('status', 401)
+        return expect(expenseController.deleteUserExpense(createRequest({}, { userId: 2 },currentExpense.id))).to.eventually.have.property('status', 401)
       })
 
       it('should allow requests from a different user if it is an admin', function(){
-        return expect(expenseController.deleteExpense(createRequest({}, { userId: 2, role: 'admin' }, currentExpense.id))).to.eventually.have.property('status', 204)
+        return expect(expenseController.deleteUserExpense(createRequest({}, { userId: 2, role: 'admin' }, currentExpense.id))).to.eventually.have.property('status', 204)
       })
 
     })
@@ -133,14 +133,14 @@ describe('Expense Controller', function(){
     beforeEach(function(){
       var promises = []
       for ( var i = 0; i < 10; ++i ){
-        promises.push(expenseController.createExpense(createRequest({
+        promises.push(expenseController.newUserExpense(createRequest({
           comment: comments[i%comments.length]
         , description: descriptions[i%descriptions.length]
         , amount: (i+1) * 100
         , dateTime: DUMMY_DATE + (i * 60*60) // 2016-01-31 01:02:03 UTC + 1hour * i
         })))
       }
-      promises.push(expenseController.createExpense(createRequest(sampleExpense,{ role: 'admin' },undefined,2)))
+      promises.push(expenseController.newUserExpense(createRequest(sampleExpense,{ role: 'admin' },undefined,2)))
       return Promise.all(promises)
     })
 

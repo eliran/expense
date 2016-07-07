@@ -4,7 +4,6 @@ module.exports = function(){
   this.seed(function(store, done){
     var User = store.Model('user');
     safePassword.pencrypt('adminPassword').then(function(encryptedPassword){
-      console.log('Password: ', encryptedPassword)
       return User.create({
         loginName: 'admin@root.org'
       , firstName: 'admin'

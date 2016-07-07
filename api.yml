@@ -3,7 +3,7 @@ swagger: '2.0'
 info:
   version: 0.9.0
   title: Simple Expense Tracker API
-host: 'localhost:8081'
+host: 'localhost'
 paths:
   /login:
     post:

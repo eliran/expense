@@ -1,14 +1,18 @@
 { 
-  "test": {
+  "default": {
     "type": "mysql"
   , "host": "localhost"
   , "database": "expense"
   , "user": "root"
   , "password": ""
   }
-, "development": {
-    "type": "sqlite3"
-  , "$$file": "./testStore"
+, "production": {
+    "type": "pg"
+  , "host": "ec2-54-243-249-154.compute-1.amazonaws.com"
+  , "port": "5432"
+  , "database": "db5p8s577g65bd"
+  , "user": "vyjwbnbwcvvwio"
+  , "password": "6SEcBmMWR3W54MRlWpjsxg6a8d"
   }
 , "$common": {
     "$$models": "./lib/models/*.js"

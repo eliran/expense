@@ -6,6 +6,14 @@
   , "user": "root"
   , "password": ""
   }
+, "development": {
+    "type": "postgres"
+  , "host": "localhost"
+  , "port": "5432"
+  , "database": "expense"
+  , "user": "eliranbe"
+  , "password": "6SEcBmMWR3W54MRlWpjsxg6a8d"
+  }
 , "production": {
     "type": "postgres"
   , "host": "ec2-54-243-249-154.compute-1.amazonaws.com"

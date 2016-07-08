@@ -1,0 +1,19 @@
+li.list-group-item.clearfix(ng-repeat='expense in ctrl.expenses')
+  div.row
+    div.col-sm-1
+      button.btn.btn-danger.deleteExpense(ng-click='ctrl.deleteExpense(expense.id)')
+        span.glyphicon.glyphicon-remove(aria-hidden=true)
+    div.col-sm-3
+      label {{expense.dateTime}}
+    div.col-sm-4 
+      span {{expense.description}}
+    div.col-sm-3 
+      h4
+        label.pull-right.label.label-default $ {{expense.amount}}
+    div.col-sm-1
+      button.btn.btn-primary.editExpense(ng-click='ctrl.editExpense(expense.id)')
+        span.glyphicon.glyphicon-pencil(aria-hidden=true)
+  div.row
+    div.col-sm-offset-1.col-sm-10
+      small {{expense.comment}}
+   

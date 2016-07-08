@@ -1,0 +1,46 @@
+article.panel.panel-primary(ng-controller='NewUserController as ctrl')
+  header.panel-heading
+    h4.panel-title New user
+  section.panel-body
+    form(name='userForm')
+      div.row
+        div.col-sm-12
+          span {{userForm.$errors}}
+           
+      div.row
+        div.col-sm-10
+          div.input-group
+            div.input-group-addon @
+            label.sr-only(for='email') Email address
+            input.form-control#email(type='email' placeholder='Email' ng-model='ctrl.form.loginName' required autofocus)
+        div.col-sm-2
+          div.form-group
+            label.sr-only(for='last') Role
+            select.form-control#last(ng-model='ctrl.form.role' required)
+              option(value='user' selected) User
+              option(value='manager') Manager
+              option(value='admin') Admin
+      div.row
+        div.col-sm-6
+          div.form-group
+            label.sr-only(for='first') First Name
+            input.form-control#first(type='text' placeholder='First Name' ng-model='ctrl.form.firstName' required)
+        div.col-sm-6
+          div.form-group
+            label.sr-only(for='last') Last Name
+            input.form-control#last(type='text' placeholder='Last Name' ng-model='ctrl.form.lastName' required)
+      div.row
+        div.col-sm-5
+          div.form-group
+            label.sr-only(for='password') Password
+            input.form-control#password(type='password' placeholder='Password' ng-model='ctrl.form.password' required)
+        div.col-sm-5
+          div.form-group
+            label.sr-only(for='password') Confirm Password
+            input.form-control#confirm(type='password' placeholder='Confirm Password' ng-model='ctrl.form.confirm' required)
+        div.col-sm-2
+          button.btn.btn-lg.btn-primary.btn-block(type='submit' ng-click='ctrl.create()' ng-disabled='userForm.$invalid') Create
+      div.row
+        div.col-sm-12
+          div.alert.alert-danger(ng-if='ctrl.errorMessage')
+            span#errorMessage {{ctrl.errorMessage}}

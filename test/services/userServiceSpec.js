@@ -1,5 +1,5 @@
 describe('User service', function(){
-  var service, mockBackend, scope, URL, mockToken
+  var service, mockBackend, URL, mockToken
   beforeEach(module('expenseApp'))
 
   // Mock SessionService
@@ -14,7 +14,6 @@ describe('User service', function(){
     URL = API_URL
     service = UserService
     mockBackend = $httpBackend
-    scope = $rootScope
   }))
 
   afterEach(function(){
@@ -31,7 +30,7 @@ describe('User service', function(){
 
   it('should allow a user to signup', function(){
     var signupResponse = userRecord(signupInfo)
-    mockBackend.expectPOST(URL + '/users').respond(201, signupResponse)
+    mockBackend.expectPOST(URL + '/users', signupInfo).respond(201, signupResponse)
     var newUser = service.signup(signupInfo)
     mockBackend.flush()
     expect(newUser).to.deep.resource.equal(signupResponse)
@@ -76,7 +75,7 @@ describe('User service', function(){
       , userRecord({id: 2, loginName: 'b@d.com'})
       , userRecord({id: 3, loginName: 'c@d.com'})
       ]
-      mockBackend.expectGET(URL + '/users', expectSessionToken).respond({ users: users })
+      mockBackend.expectGET(URL + '/users', expectSessionToken).respond(users)
       var returnedUsers = service.protected().findUsers()
       mockBackend.flush()
       expect(returnedUsers).to.deep.resource.equal(users)
@@ -115,14 +114,3 @@ describe('User service', function(){
   })
 
 })
-
-function userRecord(record){
-  record = record || {}
-  return { 
-    id: record.id || 1
-  , loginName: record.loginName || 'user@domain.com'
-  , firstName: record.firstName || 'first'
-  , lastName: record.lastName || 'last'
-  , role: record.role || 'user'
-  }
-}

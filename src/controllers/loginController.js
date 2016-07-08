@@ -11,10 +11,11 @@ angular.module('expenseApp').controller('LoginController', [
     }
 
     self.login = function(){
-      SessionService.login(self.form).then(function(){
-        $location.path('/dashboard')
+      SessionService.login(self.form).then(function(data){
+        $location.path('/users/' + data.id + '/expenses')
       }, function(error){
-        self.errorMessage = error.data.message
+        self.errorMessage = error.message
+        self.form.password = ''
       })
     }
   }

@@ -1,0 +1,12 @@
+li.list-group-item.clearfix(ng-repeat='user in ctrl.users')
+  h4.pull-right 
+    span.label.label-success.text-capitalize {{user.role}}
+  h2.h3.
+    {{user.lastName}}, {{user.firstName}} <small>{{user.loginName}}</small>
+  button.btn.btn-danger.deleteUser.pull-right(ng-click='ctrl.deleteUser(user.id)')
+    span.glyphicon.glyphicon-remove(aria-hidden=true)
+  button.btn.btn-primary.editUser(ng-click='ctrl.editUser(user.id)')
+    span.glyphicon.glyphicon-pencil(aria-hidden=true)
+  span &nbsp;
+  button.btn.btn-primary.listExpenses(ng-click='ctrl.manageExpenses(user.id)' ng-show='ctrl.canManageExpenses()')
+    span.glyphicon.glyphicon-list-alt(aria-hidden=true)

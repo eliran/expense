@@ -1,0 +1,65 @@
+article.panel.panel-primary(ng-controller='NewExpenseController as ctrl')
+  header.panel-heading
+    h4.panel-title New Expense
+  section.panel-body
+    form(name='newExpenseForm')
+      div.row
+        div.col-sm-2        
+          div.input-group
+            input.form-control(type='text' uib-datepicker-popup='yyyy/MM/dd' is-open='ctrl.datePopupOpen' ng-model='ctrl.form.date' required)
+            span.input-group-btn
+              button.btn.btn-default(ng-click='ctrl.openDate()')
+                i.glyphicon.glyphicon-calendar
+        div.col-sm-2
+          uib-timepicker(ng-model='ctrl.form.time' show-meridian='false' show-spinners='false' ) 
+        div.col-sm-5
+          input.form-control(type='text' placeholder='Description' ng-model='ctrl.form.description' required autofocus)
+        div.col-sm-3
+          div.input-group
+            span.input-group-addon $
+            input.form-control(type='number' min='1' placeholder='Amount' ng-model='ctrl.form.amount' required)
+            span.input-group-btn
+              button.btn.btn-primary(ng-click='ctrl.addExpense()' ng-disabled='newExpenseForm.$invalid') Add
+      br
+      div.row
+        div.col-sm-12
+          input.form-control(type='text' placeholder='Comment' ng-model='ctrl.form.comment')
+      br
+      div.alert.alert-danger(ng-if='ctrl.errorMessage')
+        span#errorMessage {{ctrl.errorMessage}}
+
+article.panel.panel-primary(ng-controller='ExpensesController as ctrl')
+  header.panel-heading
+    h4.panel-title Logged Expenses
+  section.panel-body
+    form(name='filterExpensesForm')
+      div.row
+        div.col-sm-3
+          div.input-group
+            span.input-group-addon
+              input(type='checkbox' ng-model='ctrl.filter.useStartDate')
+            input.form-control(type='text' uib-datepicker-popup='yyyy/MM/dd' is-open='ctrl.startDatePopupOpen' ng-model='ctrl.filter.startDate' ng-required='ctrl.filter.useStartDate' ng-enabled='ctrl.filter.useStartDate')
+            span.input-group-btn
+              button.btn.btn-default(ng-click='ctrl.openStartDate()')
+                i.glyphicon.glyphicon-calendar
+        div.col-sm-3
+          div.input-group
+            span.input-group-addon
+              input(type='checkbox' ng-model='ctrl.filter.useEndDate')
+            input.form-control(type='text' uib-datepicker-popup='yyyy/MM/dd' is-open='ctrl.endDatePopupOpen' ng-model='ctrl.filter.endDate' ng-required='ctrl.filter.useEndDate' ng-enabled='ctrl.filter.useEndDate')
+            span.input-group-btn
+              button.btn.btn-default(ng-click='ctrl.openEndDate()')
+                i.glyphicon.glyphicon-calendar
+        div.col-sm-4
+          div.input-group
+            span.input-group-addon
+              input(type='checkbox' ng-model='ctrl.filter.useSearch')
+            input.form-control(type='text' placeholder='Search Text' ng-model='ctrl.filter.searchText' ng-required='ctrl.filter.useSearch' ng-enabled='ctrl.filter.useSearch')
+        div.col-sm-1
+          button.btn.btn-primary(ng-click='ctrl.filterExpenses()' ng-disabled='filterExpensesForm.$invalid') Filter
+        div.col-sm-1
+          button.btn.btn-primary(ng-click='ctrl.reportExpenses()') Weekly
+    br
+
+    ol.list-group
+      include ./_expenseRow

@@ -1,0 +1,45 @@
+div.container(ng-controller='EditUserController as ctrl')
+  article.panel.panel-primary
+    header.panel-heading
+      h2.panel-title User: {{ctrl.loginName}}
+      div#errorMessage(ng-if='ctrl.errorMessage') {{ctrl.errorMessage}}
+      div#message(ng-if='ctrl.message') {{ctrl.message}}
+    section.panel-body
+      form(name='userForm')
+        div.row
+          div.col-sm-4
+            div.form-group
+              label(for='first') First Name
+              input.form-control#first(type='text' placeholder='First Name' ng-model='ctrl.form.firstName' required)
+          div.col-sm-4
+            div.form-group
+              label(for='last') Last Name
+              input.form-control#last(type='text' placeholder='Last Name' ng-model='ctrl.form.lastName' required)
+          div.col-sm-2
+            div.input-group
+              label(for='role') Role
+              select.form-control#role(ng-model='ctrl.form.role' required)
+                option(value='user' selected) User
+                option(value='manager') Manager
+                option(value='admin') Admin
+          div.col-sm-2
+            label
+            button.btn.btn-primary.btn-block(ng-click='ctrl.update()' ng-disabled='userForm.$invalid') Update
+
+      form(name='changePassword')
+        div.row
+          div.col-sm-3
+            div.form-group
+              label(for='password') Password
+              input.form-control#password(type='password' placeholder='Current Password' ng-model='ctrl.password.current' required)
+          div.col-sm-3
+            div.form-group
+              label(for='newPassword') New Password
+              input.form-control#newPassword(type='password' placeholder='New Password' ng-model='ctrl.password.newPassword' required)
+          div.col-sm-3
+            div.form-group
+              label(for='confirmNewPassword') Password
+              input.form-control#confirmNewPassword(type='password' placeholder='Confirm New Password' ng-model='ctrl.password.confirm' required)
+          div.col-sm-offset-1.col-sm-2
+            label
+            button.btn.btn-primary.btn-block(ng-click='ctrl.changePassword()' ng-disabled='changePassword.$invalid') Change

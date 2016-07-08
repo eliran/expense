@@ -1,0 +1,22 @@
+div.container(ng-controller='LoginController as login')
+  article.panel.panel-primary
+    header.panel-heading
+      div.alert.alert-danger#errorMessage(ng-if='login.errorMessage')
+        span#errorMessage {{login.errorMessage}}
+      h2.text-center Please sign in
+    section.panel-body
+      form#loginForm
+        div.input-group
+          div.input-group-addon @
+          label.sr-only(for='email') Email address
+          input.form-control#email(type='text' placeholder='Email' ng-model='login.form.loginName' required autofocus)
+        br
+        div.form-group
+          label.sr-only(for='password') Password
+          input.form-control#password(type='password' placeholder='Password' ng-model='login.form.password' required)
+        button.btn.btn-lg.btn-primary.btn-block(type='submit' ng-click='login.login()') Sign in
+    footer.panel-footer.text-center
+      div.text-center
+        a(href='#/signup')
+          span Don't have an account? 
+            small <b>Sign Up</b>

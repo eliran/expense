@@ -1,0 +1,10 @@
+doctype html
+html(ng-app='expenseApp')
+  include ./_head
+  body.container
+    header.page-header
+      include ./_navbar
+    section.page-body(ng-view) 
+    footer.page-footer
+      p.text-center <small>Created by <b>Eliran Ben Ezra</b></small>
+      

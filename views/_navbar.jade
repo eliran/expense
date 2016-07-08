@@ -1,0 +1,20 @@
+nav.navbar.navbar-default(ng-controller='NavController as nav')
+  div.container-fluid
+    div.navbar-header
+      span.navbar-brand(href='#') Expense Tracker
+    div
+      ui.nav.navbar-nav
+        li(ng-hide='nav.isLoggedIn()')
+          a(href='#/login') Sign in
+        li(ng-show='nav.isLoggedIn()')
+          a(href='#/') Hello, {{nav.currentUser().firstName}}
+        li(ng-show='nav.canManageUsers()')
+          a(href='#/users') Users
+        li(ng-show='nav.isLoggedIn()')
+          a(href='#/users/{{nav.currentUser().id}}/expenses') Expenses
+    div.navbar-right
+      ui.nav.navbar-nav
+        li(ng-show='nav.isLoggedIn()')
+          a(href='#/users/{{nav.currentUser().id}}') Profile
+        li(ng-show='nav.isLoggedIn()')
+          a(ng-click='nav.logout()') Logout

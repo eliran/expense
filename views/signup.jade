@@ -1,0 +1,28 @@
+div.container(ng-controller='SignupController as ctrl')
+  article.panel.panel-primary
+    header.panel-heading
+      div.alert.alert-danger#errorMessage(ng-if='ctrl.errorMessage')
+        span#errorMessage {{ctrl.errorMessage}}
+
+      h3.text-center Please Sign up
+    section.panel-body
+      form.form-group(name='signupForm')
+        div.input-group
+          div.input-group-addon @
+          label.sr-only(for='email') Email address
+          input.form-control#email(type='email' placeholder='Email' name='signupEmail' ng-model='ctrl.form.loginName' required autofocus)
+        br
+        div.form-group
+          label.sr-only(for='password') Password
+          input.form-control#password(type='password' placeholder='Password' name='signupPassword' ng-model='ctrl.form.password' required)
+        div.form-group
+          label.sr-only(for='password') Confirm Password
+          input.form-control#confirm(type='password' placeholder='Confirm Password' name='signupConfirm' ng-model='ctrl.form.confirm' required)
+        div.form-group
+          label.sr-only(for='first') First Name
+          input.form-control#first(type='text' placeholder='First Name' ng-model='ctrl.form.firstName' required)
+        div.form-group
+          label.sr-only(for='last') Last Name
+          input.form-control#last(type='text' placeholder='Last Name' ng-model='ctrl.form.lastName' required)
+
+        button.btn.btn-lg.btn-primary.btn-block(type='submit' ng-click='ctrl.signup()' ng-disabled='signupForm.$invalid') Sign up

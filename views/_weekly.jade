@@ -1,0 +1,11 @@
+li.list-group-item.clearfix(ng-repeat='week in ctrl.report')
+  div.row
+    div.col-sm-4 
+      label Week starting: &nbsp;
+      span {{week.startDate | date: fullDate}}
+    div.col-sm-4
+      span Average
+      label.pull-right.label.label-primary $ {{week.avrPerDay}} x {{week.totalDays}} days
+    div.col-sm-4 
+      span Total
+      label.pull-right.label.label-danger $ {{week.totalAmount}}

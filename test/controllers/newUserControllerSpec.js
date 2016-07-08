@@ -1,13 +1,17 @@
-describe('Signup Controller', function(){
-  var ctrl, $location, $httpBackend, API_URL
+describe('New Users Controller', function(){
+  var ctrl
 
   beforeEach(module('expenseApp'))
-  
+  beforeEach(module(function($provide){
+    $provide.value('SessionService', mockSessionService)
+  }))
+
   beforeEach(inject(function($controller, _$location_, _$httpBackend_, _API_URL_){
     $location = _$location_
     $httpBackend = _$httpBackend_
     API_URL = _API_URL_
-    ctrl = $controller('SignupController')
+    ctrl = $controller('NewUserController')
+    mockSessionService._loggedIn()
   }))
 
   afterEach(function(){
@@ -22,14 +26,11 @@ describe('Signup Controller', function(){
     , loginName: ''
     , password: ''
     , confirm: ''
+    , role: 'user'
     })
   })
 
-  it('should not have an errorMessage', function(){
-    expect(ctrl.errorMessage).to.be.undefined
-  })
-
-  describe('signup', function(){
+  describe('create user', function(){
     beforeEach(function(){
       ctrl.form = {
         firstName: 'first'
@@ -40,45 +41,42 @@ describe('Signup Controller', function(){
       }
     })
 
-    var signupResponse
-    function mockSuccessfulSignup(info){
-      signupResponse = userRecord()
-      $httpBackend.expectPOST(API_URL + '/users', info).respond(201, signupResponse)
+    var response
+    function mockSuccessful(info){
+      response = userRecord()
+      $httpBackend.expectPOST(API_URL + '/users', info).respond(201, response)
     }
 
-    function mockFailedSignup(){
+    function mockFailed(){
       $httpBackend.expectPOST(API_URL + '/users').respond(401, { message: 'an error'})
     }
 
-    var signupObject
-    function signup(){
-      signupObject = ctrl.signup()
+    var requestObject
+    function create(){
+      requestObject = ctrl.create()
     }
 
-    describe('success', function(){
+    describe('on success', function(){
       beforeEach(function(){
-        mockSuccessfulSignup(ctrl.form)
-        signup()
+        mockSuccessful(ctrl.form)
+        create()
         $httpBackend.flush()
       })
 
-      it('should receive signed up user back', function(){
-        expect(signupObject).to.resourceEql(signupResponse)
+      it('should receive created user back', function(){
+        expect(requestObject).to.resourceEql(response)
       })
 
       it('should not have an errorMessage', function(){
         expect(ctrl.errorMessage).to.be.undefined
       })
 
-      it('should redirect to login page', function(){
-        expect($location.url()).to.equal('/login')
-      })
     })
 
-    describe('failure', function(){
+    describe('on failure', function(){
       beforeEach(function(){
-        mockFailedSignup()
-        signup()
+        mockFailed()
+        create()
         $httpBackend.flush()
       })
 
@@ -86,10 +84,6 @@ describe('Signup Controller', function(){
         expect(ctrl.errorMessage).to.equal('an error') 
       })
 
-      it('should not change location', function(){
-        expect($location.url()).to.equal('')
-      })
     })
-
   })
 })

@@ -15,7 +15,8 @@ describe('Session Service', function(){
   })
 
   var emptyUser = {
-        loginName: ''
+        id: 0
+      , loginName: ''
       , firstName: ''
       , lastName: ''
       , role: ''
@@ -46,9 +47,68 @@ describe('Session Service', function(){
       mockBackend.verifyNoOutstandingRequest()
     })
     
+    describe('roles', function(){
+
+      describe(': admin', function(){
+        beforeEach(function(){
+          return loginWithRole('admin')
+        })
+
+        it('manageUsers allowed', function(){
+          expect(service.allowedTo('manageUsers')).to.be.true
+        }) 
+
+        it('manageExpenses allowed', function(){
+          expect(service.allowedTo('manageExpenses')).to.be.true
+        }) 
+      })
+
+      describe(': manager', function(){
+        beforeEach(function(){
+          return loginWithRole('manager')
+        })
+
+        it('manageUsers allowed', function(){
+          expect(service.allowedTo('manageUsers')).to.be.true
+        }) 
+
+        it('manageExpenses not allowed', function(){
+          expect(service.allowedTo('manageExpenses')).to.be.false
+        }) 
+      })
+
+      describe(': user', function(){
+        beforeEach(function(){
+          return loginWithRole('user')
+        })
+
+        it('manageUsers not allowed', function(){
+          expect(service.allowedTo('manageUsers')).to.be.false
+        }) 
+
+        it('manageExpenses not allowed', function(){
+          expect(service.allowedTo('manageExpenses')).to.be.false
+        }) 
+      })
+
+      function loginWithRole(role){
+        mockBackend.expectPOST(URL + '/login').respond({
+          token: '--token--'
+        , id: 1
+        , loginName: 'loginName'
+        , firstName: 'first'
+        , lastName: 'last'
+        , role: role
+        })
+        var promise = service.login(dummyLogin)
+        mockBackend.flush() 
+        return 
+      }
+    })
+
     describe(': unsuccessfully', function(){
       beforeEach(function(){
-        mockBackend.expectPOST(URL + '/login').respond(401,{})
+        mockBackend.expectPOST(URL + '/login').respond(401,{ message: 'error' })
       })
 
       it('should stay logged out', function(){
@@ -56,19 +116,31 @@ describe('Session Service', function(){
         mockBackend.flush()
         expectLoggedOut(service)
       })
+
+      it ('should return error object in promise catch', function(){
+        expect(service.login(dummyLogin)).to.be.rejectedWith({message: 'error'})
+        mockBackend.flush()
+      })
     })
 
     describe(': successfully', function(){
-      var userInfo = {
-        loginName: 'loginName'
+      var sentResponse, promise, userInfo = {
+        id: 1
+      , loginName: 'loginName'
       , firstName: 'first'
       , lastName: 'last'
       , role: 'user'
       }
+
       beforeEach(function(){
-        mockBackend.expectPOST(URL + '/login').respond(Object.assign({token: '--jwt-token--'}, userInfo))
-        service.login(dummyLogin)
+        sentResponse = Object.assign({token: '--jwt-token--'}, userInfo)
+        mockBackend.expectPOST(URL + '/login').respond(sentResponse)
+        promise = service.login(dummyLogin)
         mockBackend.flush() 
+      })
+
+      it('should return login user in promise', function(){
+        expect(promise).to.become(sentResponse)
       })
 
       it('should have session token', function(){
@@ -87,6 +159,7 @@ describe('Session Service', function(){
         it('should be able to login as a different user', function(){
           mockBackend.expectPOST(URL + '/login').respond({
             token: '--other-jwt-token--'
+          , id: 2
           , loginName: 'otherLogin'
           , firstName: 'otherFirst'
           , lastName: 'otherLast'
@@ -97,7 +170,8 @@ describe('Session Service', function(){
           expect(service.isLoggedIn()).to.be.true
           expect(service.token()).to.equal('--other-jwt-token--')
           expect(service.currentUser()).to.eql({
-            loginName: 'otherLogin'
+            id: 2
+          , loginName: 'otherLogin'
           , firstName: 'otherFirst'
           , lastName: 'otherLast'
           , role: 'manager'

@@ -1,0 +1,29 @@
+article.panel.panel-primary(ng-controller='EditExpenseController as ctrl')
+  header.panel-heading
+    h4.panel-title Update Expense
+  section.panel-body
+    form(name='updateExpenseForm')
+      div.row
+        div.col-sm-2        
+          div.input-group
+            input.form-control(type='text' uib-datepicker-popup='yyyy/MM/dd' is-open='ctrl.datePopupOpen' ng-model='ctrl.form.date' required)
+            span.input-group-btn
+              button.btn.btn-default(ng-click='ctrl.openDate()')
+                i.glyphicon.glyphicon-calendar
+        div.col-sm-2
+          uib-timepicker(ng-model='ctrl.form.time' show-meridian='false' show-spinners='false' ) 
+        div.col-sm-5
+          input.form-control(type='text' placeholder='Description' ng-model='ctrl.form.description' required autofocus)
+        div.col-sm-3
+          div.input-group
+            span.input-group-addon $
+            input.form-control(type='number' min='1' placeholder='Amount' ng-model='ctrl.form.amount' required)
+            span.input-group-btn
+              button.btn.btn-primary(ng-click='ctrl.updateExpense()' ng-disabled='updateExpenseForm.$invalid') Update
+      br
+      div.row
+        div.col-sm-12
+          input.form-control(type='text' placeholder='Comment' ng-model='ctrl.form.comment')
+      br
+      div.alert.alert-danger(ng-if='ctrl.errorMessage')
+        span#errorMessage {{ctrl.errorMessage}}

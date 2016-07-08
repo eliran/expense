@@ -1,0 +1,12 @@
+include ./_newUser
+
+article.panel.panel-primary(ng-controller='UsersController as ctrl')
+  header.panel-heading
+    h4.panel-title Users
+  section.panel-body
+    div(ng-if='ctrl.users.length > 0')
+      h2.text-center Users
+      ol.list-group
+        include ./_userRow
+    div(ng-if='!ctrl.users || ctrl.users.length == 0')
+      h2.text-center Oops, No Users

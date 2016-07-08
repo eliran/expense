@@ -3,7 +3,14 @@ exports.config = {
 , baseUrl: 'http://localhost:3000'
 , capabilities: {
     browserName: 'chrome'
+  , loggingPrefs: {
+      browser: 'ALL'
+    }
   }
-, specs: [ 'e2e/*Spec.js' ]
+, specs: [ 'integration/*Spec.js' ]
 , framework: 'mocha'
+, mochaOpts: {
+  reporter: "spec",
+}
+
 }

@@ -1,8 +1,8 @@
 'use strict'
 
 angular.module('expenseApp').controller('SignupController', [
-           'UserService','$location','$log',
-  function( UserService , $location , $log){
+           'UserService','$location',
+  function( UserService , $location ){
     var self = this
     self.form = {
       loginName: ''
@@ -11,13 +11,19 @@ angular.module('expenseApp').controller('SignupController', [
     , lastName: ''
     , confirm: ''
     }
-    self.message = 'all ok'
     self.signup = function(){
-      return UserService.signup(self.form).then(function(){
+      if ( self.form.password.length === 0 || self.form.password !== self.form.confirm ) {
+        self.errorMessage = 'Password & Confirm must match'
+        return false
+      }
+      self.errorMessage = undefined
+      var signupUser = UserService.signup(self.form, function(value){
         $location.path('/login')
-      }, function(error){
-         self.errorMessage = error.data.message
       })
+      signupUser.$promise.catch(function(error){
+        self.errorMessage = error.data.message
+      })
+      return signupUser
     }
   }
 ])

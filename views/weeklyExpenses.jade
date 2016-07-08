@@ -1,0 +1,8 @@
+article.panel.panel-primary(ng-controller='WeeklyExpensesController as ctrl')
+  header.panel-heading
+    h4.panel-title Weekly Expenses
+  section.panel-body
+    div.alert.alert-danger(ng-if='ctrl.errorMessage')
+      span#errorMessage {{ctrl.errorMessage}}
+    ol.list-group
+      include ./_weekly

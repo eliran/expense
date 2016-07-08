@@ -205,6 +205,16 @@ describe('User Controller', function(){
           expect(response.body).to.have.keys('token', 'loginName', 'id', 'firstName', 'lastName', 'role')
         })
       })
+
+      it('should return user session info with valid token', function(){
+        var loginBody = { body: { loginName: userJSON.loginName, password: FAKE_USER_PASSWORD } }
+        return userController.loginUser(loginBody).then(function(response){
+          return expect(userController.getSession({ session: { userId: 1, role: 'user' } })).to.be.fulfilled.and.then(function(session){
+            expect(response.status).to.equal(200)
+            expect(response.body).to.have.keys('token', 'loginName', 'id', 'firstName', 'lastName', 'role')
+          })
+        })
+      })
     })
 
     describe('get user', function(){

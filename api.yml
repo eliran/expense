@@ -32,6 +32,32 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/errorModel'
+
+  /session:
+    get:
+      description: Get the current session or a new one
+      operationId: getSession
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/loginUser'
+      responses:
+        '200':
+          description: user logged in
+          schema:
+            $ref: '#/definitions/loginToken'
+        '401':
+          description: unauthorized
+          schema:
+            $ref: '#/definitions/errorModel'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+      security:
+        - 'x-token': []
+     
       
   /users:
     post:
@@ -75,12 +101,9 @@ paths:
         '200':
           description: user response
           schema:
-            type: object
-            properties:
-              users:
-                type: array
-                items:
-                  $ref: '#/definitions/user'
+            type: array
+            items:
+              $ref: '#/definitions/user'
         default:
           description: unexpected error
           schema:
@@ -218,12 +241,9 @@ paths:
         '200':
           description: User Expenses
           schema:
-            type: object
-            properties:
-              expenses:
-                type: array
-                items:
-                  $ref: '#/definitions/expense'
+            type: array
+            items:
+              $ref: '#/definitions/expense'
         default:
           description: unexpected error
           schema:
@@ -231,6 +251,32 @@ paths:
       security:
         - 'x-token': []  
 
+  /users/{userId}/expenses/weekly:
+    get:
+      description: Returns a weekly report of expenses
+      operationId: weeklyReport
+      parameters:
+        - name: userId
+          in: path
+          description: User ID to fetch expense
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Weekly Expense Report
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/weeklyExpense'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+      security:
+        - 'x-token': []  
+
+      
   /users/{userId}/expenses/{id}:
     get:
       description: Fetch an expense of a user
@@ -335,8 +381,17 @@ definitions:
     type: object
     required:
       - token
+      - loginName
+      - firstName
+      - lastName
     properties:
+      loginName:
+        type: string
       token:
+        type: string
+      firstName:
+        type: string
+      lastName:
         type: string
 
   newUser:
@@ -405,6 +460,31 @@ definitions:
       comment:
         type: string
   
+  weeklyExpense:
+    type: object
+    properties:
+      year: 
+        type: integer
+        format: int32
+      week:
+        type: integer
+        format: int32
+      startDate:
+        type: integer
+        format: int32
+      endDate:
+        type: integer
+        format: int32
+      totalDays:
+        type: integer
+        format: int32
+      avrPerDay:
+        type: integer
+        format: int32
+      totalAmount:
+        type: integer
+        format: int32
+   
   errors:
     type: object
     required:

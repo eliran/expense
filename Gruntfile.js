@@ -35,8 +35,8 @@ module.exports = function(grunt) {
         separator: ';'
       }
     , dist: {
-        src: [ 'src/libs/angular.js', 'src/libs/jquery.js', 'js/*.js', 'src/libs/*.js', 'src/app.js', 'src/*.js', 'build/templates.js', 'src/services/*.js', 'src/controllers/*.js' ]
-      , dest: 'public/app.js'
+        src: [ 'src/libs/angular.js', 'src/libs/jquery.js', 'src/libs/*.js', 'src/app.js', 'src/*.js', 'build/templates.js', 'src/services/*.js', 'src/controllers/*.js' ]
+      , dest: 'build/app.js'
       }
     }
   , bowercopy: {
@@ -107,8 +107,8 @@ module.exports = function(grunt) {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       }
     , build: {
-        src: 'dist/app.js'
-      , dest: 'dist/app.min.js'
+        src: 'build/app.js'
+      , dest: 'public/app.min.js'
       }
     }
   })

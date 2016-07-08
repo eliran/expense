@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('expenseApp', [ 'ngRoute', 'ngResource', 'LocalStorageModule', 'ui.bootstrap' ])
-.value('API_URL', 'http://localhost:8081/api') //  'https://simple-expense-tracker.herokuapp.com')
+.value('API_URL', 'http://localhost:8080/api')
 .config([
            '$routeProvider',
   function( $routeProvider ){

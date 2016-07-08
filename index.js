@@ -1,4 +1,4 @@
 var Web = require('./web')
   , webServer = new Web()
 
-webServer.start(3000)
+webServer.start(process.env.PORT || 3000)
